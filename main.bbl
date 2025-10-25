@@ -87,6 +87,11 @@ D.~Torres and L.~Muñoz, ``Multi-channel customer communication strategies in
   financial services,'' \emph{Latin American Journal of Management and
   Innovation}, vol.~5, no.~1, pp. 45--53, 2020.
 
+\bibitem{liu2011}
+S.~Liu, ``An integrated multi-channel messaging model supporting for business
+  collaboration [figure],'' IEEE Xplore, 2011, available at:
+  \url{https://ieeexplore.ieee.org/document/6112142}.
+
 \bibitem{sbs2021}
 {Superintendencia de Banca, Seguros y AFP (SBS)}, ``Resolución sbs n°
   504-2021: Reglamento para la seguridad de la información y ciberseguridad,''
@@ -96,10 +101,5 @@ D.~Torres and L.~Muñoz, ``Multi-channel customer communication strategies in
 {International Organization for Standardization}, \emph{ISO/IEC 27001:
   Information Security Management Systems — Requirements}, ISO, Geneva,
   Switzerland Std., 2022.
-
-\bibitem{liu2011}
-S.~Liu, ``An integrated multi-channel messaging model supporting for business
-  collaboration [figure],'' IEEE Xplore, 2011, available at:
-  \url{https://ieeexplore.ieee.org/document/6112142}.
 
 \end{thebibliography}
