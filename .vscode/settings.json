@@ -23,5 +23,6 @@
     }
   ],
 
+  "latex-workshop.latex.recipe.default": "XeLaTeX -> BibTeX -> XeLaTeX ×2",
   "latex-workshop.view.pdf.viewer": "tab"
 }
