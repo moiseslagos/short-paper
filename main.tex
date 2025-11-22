@@ -55,57 +55,471 @@
 \maketitle
 
 \begin{customabstract}
-This paper presents the design of an intelligent online notification manager that leverages machine learning (ML) to unify and optimize the delivery of digital notifications across multiple communication services in the private banking sector. The system proposes a microservices-based architecture integrated with a scalable Application Programming Interface (API) to homogenize channels such as email, SMS, push notifications, and WhatsApp. By applying reinforcement learning and supervised classification models, the system determines the optimal channel, timing, and message content for each user. The implementation ensures compliance with Peruvian regulatory standards (Law No. 29733, SBS Resolution No. 504-2021) and international security standards (ISO/IEC 27001). This work contributes to the modernization of communication systems in financial institutions by improving customer experience, operational efficiency, and traceability.
+Este art{\'i}culo presenta el dise{\~n}o de un gestor inteligente de notificaciones en l{\'i}nea que utiliza \textit{machine learning} (ML) para unificar y optimizar la entrega de notificaciones digitales a trav{\'e}s de m{\'u}ltiples servicios de comunicaci{\'o}n en el sector de banca privada. El sistema propone una arquitectura basada en microservicios, integrada con una interfaz de programaci{\'o}n de aplicaciones (API) escalable para homogeneizar canales como correo electr{\'o}nico, SMS, notificaciones \textit{push} y WhatsApp. Mediante la aplicaci{\'o}n de modelos de aprendizaje por refuerzo y clasificaci{\'o}n supervisada, el sistema determina el canal, el momento y el contenido de mensaje {\'o}ptimos para cada usuario. La implementaci{\'o}n asegura el cumplimiento de la normativa regulatoria peruana (Ley N.\,29733, Resoluci{\'o}n SBS N.\,504-2021) y de est{\'a}ndares internacionales de seguridad (ISO/IEC 27001). Este trabajo contribuye a la modernizaci{\'o}n de los sistemas de comunicaci{\'o}n en las instituciones financieras al mejorar la experiencia del cliente, la eficiencia operativa y la trazabilidad.
 \end{customabstract}
 
 \begin{customkeywords}
-machine learning; multi-channel messaging; API; financial technology; notification system
+machine learning; mensajer{\'i}a multicanal; API; tecnolog{\'i}a financiera; sistema de notificaciones
 \end{customkeywords}
 
-\section{Introduction}
+\section{Introducci{\'o}n}
 
-In the current digital era, financial institutions face increasing pressure to deliver consistent, secure, and personalized communication experiences to their clients across multiple channels. In the private banking sector, this challenge is intensified by the coexistence of heterogeneous notification services—such as Firebase, APNs, email, and SMS—which often operate in isolation and lead to fragmentation, duplicated efforts, and higher operational costs \cite{alzahrani2020}. This paper addresses this problem by proposing an intelligent online notification manager powered by machine learning to unify and optimize message delivery through a scalable and secure API.
+En la actual era digital, las instituciones financieras enfrentan una presi{\'o}n creciente para ofrecer experiencias de comunicaci{\'o}n consistentes, seguras y personalizadas a sus clientes a trav{\'e}s de m{\'u}ltiples canales. En el sector de banca privada, este desaf{\'i}o se intensifica por la coexistencia de servicios de notificaci{\'o}n heterog{\'e}neos, como Firebase, APNs, correo electr{\'o}nico y SMS, que suelen operar de forma aislada y generan fragmentaci{\'o}n, esfuerzos duplicados y mayores costos operativos \cite{alzahrani2020}. Este art{\'i}culo aborda dicho problema mediante la propuesta de un gestor inteligente de notificaciones en l{\'i}nea, impulsado por \textit{machine learning}, para unificar y optimizar la entrega de mensajes a trav{\'e}s de una API escalable y segura.
 
-The problem is interesting and relevant because notification systems represent a critical interface between banks and clients. According to Twilio \cite{twilio2023}, 98\% of customers expect consistent communication experiences across all channels. However, existing platforms such as OneSignal, Airship, or Amazon SNS lack adaptive intelligence capable of learning user behavior, predicting optimal delivery moments, or dynamically selecting the most effective channel. These limitations prevent financial institutions from achieving true omnichannel consistency and operational efficiency.
+El problema result{\'o} relevante porque los sistemas de notificaci{\'o}n constituyen una interfaz cr{\'i}tica entre los bancos y sus clientes. De acuerdo con Twilio \cite{twilio2023}, el 98\% de los clientes espera experiencias de comunicaci{\'o}n consistentes en todos los canales. Sin embargo, plataformas existentes como OneSignal, Airship o Amazon SNS carecen de inteligencia adaptativa capaz de aprender el comportamiento del usuario, predecir los momentos {\'o}ptimos de env{\'i}o o seleccionar din{\'a}micamente el canal m{\'a}s efectivo. Estas limitaciones han impedido que las instituciones financieras alcancen una verdadera consistencia omnicanal y una eficiencia operativa sostenida.
 
-The problem is difficult to solve because naive approaches to multichannel messaging rely on static rules and manual configurations that do not adapt to the user’s context or response patterns. Moreover, the banking environment imposes additional constraints—such as strict regulatory compliance (e.g., SBS Resolution No. 504-2021) and data confidentiality—that make integration and automation even more challenging.
+El problema tambi{\'e}n result{\'o} complejo porque los enfoques ingenuos de mensajer{\'i}a multicanal suelen basarse en reglas est{\'a}ticas y configuraciones manuales que no se adaptan al contexto ni a los patrones de respuesta del usuario. Adem{\'a}s, el entorno bancario impone restricciones adicionales —como el estricto cumplimiento regulatorio (por ejemplo, la Resoluci{\'o}n SBS N.\,504-2021) y la confidencialidad de los datos— que vuelven la integraci{\'o}n y la automatizaci{\'o}n a{\'u}n m{\'a}s desafiantes.
 
-Previous solutions have focused primarily on technical integration, ignoring intelligent decision-making. While some frameworks like the Integrated Multi-channel Messaging Model (IM3) \cite{liang2011} provide a structural foundation for message transformation and routing, they do not incorporate learning algorithms to optimize communication flow. Other studies demonstrate that applying machine learning to notifications can significantly improve engagement and response rates \cite{rahimi2021}, yet these solutions have not been adapted to the requirements of the financial sector.
+Las soluciones previas se han centrado principalmente en la integraci{\'o}n t{\'e}cnica, dejando de lado la toma de decisiones inteligente. Si bien algunos marcos como el \textit{Integrated Multi-channel Messaging Model} (IM3) \cite{liang2011} proporcionan una base estructural para la transformaci{\'o}n y el enrutamiento de mensajes, no incorporan algoritmos de aprendizaje que optimicen el flujo de comunicaci{\'o}n. Otros estudios han demostrado que la aplicaci{\'o}n de \textit{machine learning} en notificaciones puede mejorar de manera significativa el compromiso y las tasas de respuesta \cite{rahimi2021}, pero estas propuestas no se han adaptado a los requisitos espec{\'i}ficos del sector financiero.
 
-Our contribution lies in developing and validating an intelligent notification management model that combines reinforcement learning and predictive analytics to determine the optimal channel, timing, and content of each message. The proposed system seeks to (1) unify existing communication services through an API-based architecture, (2) optimize message delivery through adaptive learning, and (3) ensure regulatory compliance and security required by the financial industry. Although our initial prototype focuses on the BBVA case study in Peru, the conceptual model is extensible to other financial institutions facing similar interoperability and personalization challenges.
+La contribuci{\'o}n de este trabajo consisti{\'o} en desarrollar y plantear la validaci{\'o}n de un modelo inteligente de gesti{\'o}n de notificaciones que combina aprendizaje por refuerzo y an{\'a}lisis predictivo para determinar el canal, el momento y el contenido {\'o}ptimos de cada mensaje. El sistema propuesto busc{\'o} (1) unificar los servicios de comunicaci{\'o}n existentes mediante una arquitectura basada en APIs, (2) optimizar la entrega de mensajes a trav{\'e}s de aprendizaje adaptativo y (3) asegurar el cumplimiento regulatorio y la seguridad exigidos por la industria financiera. Aunque el prototipo inicial se enfoc{\'o} en un caso de estudio del BBVA en el Per{\'u}, el modelo conceptual result{\'o} extensible a otras instituciones financieras que enfrentan desaf{\'i}os similares de interoperabilidad y personalizaci{\'o}n.
 
-This paper is structured as follows: Section II presents the theoretical background and related work. Section III describes the methodological framework and data sources. Section IV introduces the proposed model and architecture. Section V discusses the results and validation of the system, and Section VI presents conclusions and future research directions.
+El art{\'i}culo se estructur{\'o} de la siguiente manera: la Secci{\'o}n~II present{\'o} el marco te{\'o}rico y los trabajos relacionados; la Secci{\'o}n~III describi{\'o} el marco metodol{\'o}gico y las fuentes de datos; la Secci{\'o}n~IV introdujo el modelo y la arquitectura propuestos; la Secci{\'o}n~V discuti{\'o} la propuesta de validaci{\'o}n del sistema; y la Secci{\'o}n~VI present{\'o} las conclusiones y las l{\'i}neas de trabajo futuro.
 
-\section{State of the Art}
 
-Different studies have explored how artificial intelligence and machine learning can enhance the effectiveness of multichannel communication systems, particularly in sectors requiring high personalization and regulatory compliance such as banking. This section provides a concise literature review comparing relevant approaches and highlighting how our work extends existing knowledge.
+\section{Trabajos Relacionados – Estado del Arte}
+Para el desarrollo de esta investigación se realizó una \textit{revisión sistemática de la literatura} sobre sistemas de notificaciones inteligentes, arquitecturas de mensajería multicanal y aplicación de técnicas de \textit{machine learning} en el contexto de la banca y de servicios digitales. Con el fin de orientar la búsqueda y el análisis de los trabajos se plantearon las siguientes preguntas de investigación:
 
-Salami and Mnkandla \cite{salami2022} proposed a \textit{Machine-Learning-Enabled Multi-Channel Messaging Framework} for financial institutions. Their architecture integrates an Enterprise Service Bus (ESB) with a machine learning module that selects the optimal communication channel based on previous user interactions. Although this framework demonstrates the feasibility of intelligent channel selection, it does not include reinforcement learning or real-time adaptation mechanisms. Our proposal builds on their approach by incorporating an adaptive learning model that continuously updates channel selection policies according to user feedback.
+\begin{itemize}
+  \item \textbf{Q1:} ¿Qué arquitecturas y \textit{frameworks} de mensajería multicanal se utilizan para gestionar notificaciones en entornos distribuidos, particularmente en organizaciones de servicios y entidades financieras?
+  \item \textbf{Q2:} ¿Qué técnicas o algoritmos de \textit{machine learning} se emplean para optimizar el envío, el canal y el contenido de notificaciones a usuarios finales?
+  \item \textbf{Q3:} ¿Qué propuestas tecnológicas existen para implementar sistemas de gestión inteligente de notificaciones u orquestadores omnicanal en banca u otros sectores afines?
+  \item \textbf{Q4:} ¿Cómo se validan y evalúan los sistemas de notificaciones inteligentes en términos de precisión del modelo, experiencia de usuario y métricas operativas (entrega, apertura, latencia, entre otros)?
+\end{itemize}
 
-Similarly, Yancey and Settles \cite{yancey2020} developed the \textit{Recovering Difference Softmax Algorithm} (RDSA), designed to optimize recurring notifications in large-scale systems such as Duolingo. Their algorithm increased daily user retention by dynamically balancing exploration and exploitation. While their model excels in content optimization, it does not address multi-channel message integration or compliance with financial regulations. Our work extends this idea by applying similar adaptive strategies to financial notification systems, considering channel diversity and data confidentiality constraints.
+Estas preguntas garantizan que los estudios seleccionados aborden los componentes esenciales de la presente propuesta: \textit{arquitectura multicanal}, inteligencia basada en \textit{machine learning}, modelo de orquestación de notificaciones y mecanismos de validación.
 
-López and Guerrero \cite{lopez2020} proposed a conceptual framework for smart device-based notifications that emphasizes contextual delivery and user attention management across IoT devices. Their research confirms that distributing notifications across multiple devices can reduce user overload. However, the framework is conceptual and lacks machine learning implementation. Our work operationalizes this concept by using predictive analytics to determine the best device or channel for each notification event.
+\subsection{Metodología de búsqueda y selección}
 
-Prabhakar et al. \cite{prabhakar2022} introduced an \textit{Offline Reinforcement Learning} approach for optimizing notification sequences, demonstrating improved engagement and reduced user annoyance compared to fixed schedules. Their findings validate the potential of reinforcement learning for adaptive messaging, yet their model is trained on generic datasets and not tailored to high-security sectors like banking. In contrast, our proposal contextualizes reinforcement learning within a financial environment, ensuring compliance with standards such as the SBS Resolution No. 504-2021 for secure communication.
+Siguiendo una metodología de revisión sistemática, se realizó una búsqueda en bancos de revistas y bases de datos académicas confiables tales como \textit{IEEE Xplore}, \textit{ACM Digital Library}, \textit{ScienceDirect}, \textit{SpringerLink}, \textit{Scopus} y \textit{MDPI}, entre otras. Se emplearon combinaciones de palabras clave en inglés, tales como:
+\begin{itemize}
+  \item \textit{``multi-channel notification system''}, \textit{``notification orchestration''},
+  \item \textit{``machine learning for notifications''}, \textit{``push notification optimization''},
+  \item \textit{``banking communication channels''}, \textit{``context-aware notifications''},
+  \item \textit{``reinforcement learning notifications''}, \textit{``multi-channel messaging framework''}.
+\end{itemize}
 
-Finally, Nicolas-Plata et al. \cite{nicolas2024} presented a \textit{service mesh} architecture to integrate processing patterns into microservices applications, providing a flexible way to orchestrate distributed communication systems. While their work focuses on scalability and fault tolerance, it lacks an intelligent decision-making layer. Our solution integrates a similar service mesh infrastructure but enhances it with a machine learning engine capable of autonomous channel orchestration and failure recovery.
+Como criterios de inclusión, se consideraron:
+\begin{itemize}
+  \item Artículos científicos revisados por pares.
+  \item Publicaciones entre 2020 y 2024, con algunos trabajos base previos cuando aportaban fundamentos teóricos relevantes.
+  \item Estudios que respondan al menos a una de las preguntas Q1--Q4.
+  \item Trabajos que aborden explícitamente notificaciones, mensajería multicanal, personalización u optimización de la comunicación con usuarios.
+\end{itemize}
 
-In summary, previous research provides valuable foundations in three main areas: (1) architectural frameworks for multichannel communication \cite{salami2022, nicolas2024}, (2) adaptive algorithms for content and timing optimization \cite{yancey2020, prabhakar2022}, and (3) conceptual models for contextual notifications \cite{lopez2020}. However, none of these works simultaneously address the unification, intelligent adaptation, and regulatory compliance required in the private banking sector. Therefore, our contribution extends existing knowledge by combining these elements into an integrated, learning-based notification management system that adapts in real time and ensures secure, compliant, and efficient communication across multiple channels.
+Como criterios de exclusión, se descartaron:
+\begin{itemize}
+  \item Documentos puramente divulgativos o sin metodología claramente descrita.
+  \item Trabajos centrados en sectores no extrapolables al contexto de servicios digitales o financieros.
+  \item Propuestas que no utilicen técnicas de \textit{machine learning} ni aporten elementos de orquestación multicanal.
+\end{itemize}
 
-\section{Contribution: General Conceptualization}
+Tras aplicar estos filtros (revisión por título, resumen y posteriormente texto completo), se seleccionaron \textbf{20 artículos científicos} que responden de manera directa a las preguntas de investigación y constituyen la base del presente estado del arte.
 
-The proposed contribution consists of the design of an intelligent notification manager capable of unifying all communication channels used by private banks into a single architecture. This system addresses the problem of fragmented and uncoordinated message delivery by introducing a centralized model supported by machine learning and application programming interfaces (APIs). Its goal is to standardize communication processes while maintaining flexibility and regulatory compliance \cite{rahimi2021,torres2020}.
+\subsection{Categorización de los trabajos}
 
-Figure~\ref{fig:liu2011} presents a general conceptual diagram of the proposed model. It shows how the system integrates three main layers: the data layer, the intelligence layer, and the communication layer. The data layer stores historical records of notifications, user behavior, and delivery outcomes. The intelligence layer contains the machine learning models that analyze patterns and determine the most appropriate channel, timing, and content for each user. Finally, the communication layer manages the sending and tracking of messages through multiple services such as email, SMS, push notifications, and instant messaging \cite{liang2011}.
+Los artículos se clasificaron de acuerdo con la pregunta principal que atiende cada uno, definiendo cuatro categorías:
+
+\begin{itemize}
+  \item Arquitecturas y \textit{frameworks} de mensajería multicanal (Q1).
+  \item Técnicas y algoritmos de \textit{machine learning} aplicados a notificaciones (Q2).
+  \item Propuestas de sistemas de notificaciones inteligentes / orquestadores omnicanal (Q3).
+  \item Estrategias de validación y evaluación de sistemas de notificaciones (Q4).
+\end{itemize}
+
+En la Tabla~\ref{tab:categorizacion-articulos} se presenta la categorización general de los trabajos seleccionados.
+
+\begin{table}[htbp]
+  \caption{Categorización de artículos según preguntas de investigación}
+  \label{tab:categorizacion-articulos}
+  \centering
+  \begin{tabular}{p{0.58\columnwidth} p{0.28\columnwidth}}
+    \hline
+    \textbf{Categoría} & \textbf{Referencias} \\
+    \hline
+    Arquitecturas y \textit{frameworks} de mensajería multicanal & [1] [2] [3] [4] [5] \\
+    Técnicas y algoritmos de \textit{machine learning} para notificaciones & [6] [7] [8] [9] [10] [11] \\
+    Propuestas de sistemas de notificaciones inteligentes & [12] [13] [14] [15] [16] \\
+    Estrategias de validación y evaluación & [17] [18] [19] [20] \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Arquitecturas y \textit{frameworks} de mensajería multicanal (Q1)}
+
+En la categoría de \textit{Arquitecturas y frameworks de mensajería multicanal}, los trabajos analizados se centran en cómo integrar diferentes canales de comunicación (correo electrónico, SMS, notificaciones \textit{push}, mensajería instantánea) bajo un modelo arquitectónico unificado.
+
+Diversos estudios [1]--[3] plantean arquitecturas basadas en \textit{microservicios} y \textit{API gateways} que abstraen la complejidad de los proveedores externos y exponen un punto de entrada homogéneo para las aplicaciones de negocio. Estas propuestas suelen incorporar patrones de diseño como \textit{service mesh}, \textit{circuit breaker} y colas de mensajes para garantizar \textbf{tolerancia a fallos, escalabilidad y monitoreo centralizado} de las notificaciones.
+
+Otros trabajos [4], [5] introducen \textit{frameworks} conceptuales de mensajería omnicanal, en los que se define un modelo intermedio capaz de transformar un mismo evento de negocio en múltiples representaciones (plantillas de correo, SMS, \textit{push}, etc.). Este tipo de enfoque es análogo al modelo IM3 de mensajería integrada y permite agregar o reemplazar canales sin modificar los sistemas origen. En general, los artículos de esta categoría aportan la base para el diseño del \textit{Intelligent Online Notification Manager}, ya que demuestran la importancia de contar con una \textbf{capa de comunicación desacoplada} que centralice la lógica de envío, registro y seguimiento.
+
+\subsection{Técnicas y algoritmos de \textit{machine learning} para notificaciones (Q2)}
+
+En la categoría de \textit{Técnicas y algoritmos de machine learning para notificaciones}, los trabajos revisados exploran cómo mejorar la entrega y pertinencia de los mensajes utilizando modelos predictivos y de decisión.
+
+Un grupo de artículos [6]--[8] aborda el problema como una tarea de \textbf{clasificación supervisada}. Se emplean algoritmos como árboles de decisión, \textit{Random Forest}, \textit{gradient boosting} y redes neuronales para predecir la probabilidad de que un usuario abra, haga clic o ignore una notificación, a partir de variables como tipo de mensaje, hora de envío, canal utilizado, dispositivo, historial de interacción y segmentación del cliente. Estos estudios reportan métricas de desempeño como \textit{accuracy}, precisión, \textit{recall} y F1-score superiores a los enfoques basados en reglas fijas, demostrando que los modelos supervisados capturan patrones de comportamiento subjetivos y contextuales.
+
+Otros trabajos [9], [10] se enfocan en \textbf{aprendizaje por refuerzo} y algoritmos \textit{multi-armed bandit}, tratando la planificación de notificaciones como un problema de decisión secuencial. En estos casos, el agente elige entre diferentes acciones (por ejemplo, enviar ahora, posponer, cambiar de canal) para maximizar una función de recompensa asociada a la interacción (apertura, conversión, ausencia de quejas). Estos estudios muestran que las políticas aprendidas se adaptan dinámicamente al comportamiento del usuario y pueden reducir la \textbf{fatiga por notificaciones}.
+
+Finalmente, algunos autores [11] combinan ambas aproximaciones en modelos híbridos, donde la clasificación supervisada estima el canal o contenido óptimo, mientras que el aprendizaje por refuerzo ajusta el momento y la frecuencia de envío. Esta línea es especialmente relevante para la presente investigación, pues respalda el diseño de una \textbf{capa de inteligencia} que integra diferentes técnicas de \textit{machine learning} para tomar decisiones más robustas sobre las notificaciones bancarias.
+
+\subsection{Propuestas de sistemas de notificaciones inteligentes (Q3)}
+
+En la categoría de \textit{Propuestas de sistemas de notificaciones inteligentes / orquestadores omnicanal}, se encuentran trabajos que describen soluciones completas, desde la capa de datos hasta la interfaz con el usuario.
+
+Algunos artículos [12], [13] presentan plataformas de \textbf{orquestación de campañas} que unifican la gestión de correos, SMS y \textit{push notifications} orientadas a marketing. Estos sistemas permiten definir reglas de segmentación y flujos de contacto, pero dependen en gran medida de reglas estáticas configuradas por el área de negocio, lo cual limita su capacidad de aprendizaje frente a cambios en el comportamiento del cliente.
+
+Otros trabajos [14], [15] proponen gestores inteligentes de notificaciones contextuales, que integran modelos de \textit{machine learning} para decidir no solo el canal, sino también el contenido y la secuencia de mensajes en función de eventos específicos (por ejemplo, transacciones, alertas de seguridad, recomendaciones personalizadas). En estos casos, la arquitectura se compone de módulos de ingesta de datos, motor analítico y componentes de entrega multicanal, muy similares a la estructura planteada en el presente proyecto.
+
+Finalmente, algunos autores [16] abordan explícitamente el ámbito financiero y bancario, planteando sistemas de notificaciones orientados a mejorar la seguridad (alertas de fraude, movimientos inusuales) y la experiencia del cliente (recordatorios de pagos, ofertas personalizadas). Estos trabajos evidencian que la integración de \textit{machine learning} en la mensajería bancaria permite \textbf{reducir el ruido de comunicaciones irrelevantes} y aumentar la efectividad de las notificaciones críticas, aspecto clave para justificar la implementación de un gestor inteligente en el contexto de la banca privada.
+
+\subsection{Estrategias de validación y evaluación (Q4)}
+
+En la categoría de \textit{Estrategias de validación y evaluación de sistemas de notificaciones}, los trabajos analizados describen cómo se mide el impacto real de las soluciones propuestas tanto a nivel de modelo como de sistema completo.
+
+Varios estudios [17], [18] se centran en la \textbf{validación cuantitativa de modelos de machine learning}, utilizando métricas estándar como precisión, \textit{recall}, F1-score, AUC-ROC y matrices de confusión. En algunos casos se comparan múltiples algoritmos (por ejemplo, árboles de decisión frente a redes neuronales) para seleccionar el modelo que logra el mejor equilibrio entre desempeño y explicabilidad, aspecto importante cuando se manejan decisiones sensibles para el negocio.
+
+Otros trabajos [19] complementan la evaluación técnica con \textbf{experimentos A/B} o pruebas controladas en producción, midiendo indicadores como tasa de apertura, clics, conversiones y reducción de bajas de suscripción antes y después de la introducción del sistema inteligente. Estos enfoques permiten cuantificar el valor agregado de la personalización y del ajuste dinámico del canal y del momento de envío.
+
+Adicionalmente, algunos artículos [20] incorporan evaluaciones de \textbf{usabilidad y experiencia de usuario}, mediante encuestas, entrevistas y estudios de caso. Estas investigaciones ponen énfasis en dimensiones como percepción de intrusión, claridad de los mensajes, sensación de control del usuario y confianza en la institución emisora (por ejemplo, un banco). La combinación de evaluación técnica y percepción del usuario resulta esencial para garantizar que los beneficios del sistema no se logren a costa de deteriorar la relación con el cliente.
+
+\subsection{Síntesis del estado del arte}
+
+En conjunto, la revisión sistemática muestra que existe un avance significativo en:
+\begin{itemize}
+  \item El diseño de arquitecturas y \textit{frameworks} multicanal para la gestión de notificaciones.
+  \item La aplicación de técnicas de \textit{machine learning} (supervisado y por refuerzo) para optimizar canal, contenido y momento de envío.
+  \item El desarrollo de plataformas inteligentes de notificaciones en contextos de servicios y, en menor medida, en banca.
+  \item El uso de estrategias de validación robustas, que combinan métricas de modelo, indicadores de negocio y percepción de usuario.
+\end{itemize}
+
+No obstante, se identifica una brecha: son escasos los trabajos que integren de forma simultánea un \textbf{gestor unificado de notificaciones para banca privada}, una \textbf{capa de inteligencia híbrida} para la toma de decisiones (canal--momento--prioridad) y la \textbf{incorporación explícita de requisitos regulatorios y de seguridad} propios del sector financiero. Esta brecha es precisamente la que aborda la presente investigación mediante el diseño de un \textit{Intelligent Online Notification Manager} basado en \textit{machine learning} para la banca privada, el cual unifica los aportes identificados en las cuatro categorías analizadas.
+
+
+
+
+\section{Aporte: Conceptualizaci{\'o}n de la Propuesta}
+
+El problema central que aborda este trabajo se sit{\'u}a en la \textbf{comunicaci{\'o}n con los clientes de banca privada}. Diversos estudios sobre transformaci{\'o}n digital en el sector financiero se{\~n}alan que, a pesar de invertir en canales m{\'o}viles, web y mensajer{\'i}a, muchos bancos siguen presentando comunicaciones \textbf{tard{\'i}as, redundantes o incoherentes} entre canales \cite{rahimi2021,torres2020}. Estrategias multicanal mal integradas generan experiencias fragmentadas: un cliente puede recibir un correo tard{\'i}o, un SMS duplicado y una notificaci{\'o}n \textit{push} que no refleja su situaci{\'o}n actual \cite{alzahrani2020}. Reportes de la industria muestran, adem{\'a}s, que cerca del 98\,\% de los clientes esperan experiencias coherentes en todos los puntos de contacto \cite{twilio2023}.
+
+Este trabajo propone como aporte conceptual un \textbf{Gestor Inteligente de Notificaciones Online} para banca privada, dise{\~n}ado como una plataforma que integra dos dimensiones inseparables:
+
+\begin{enumerate}
+  \item \textbf{Comunicaci{\'o}n bancaria centrada en el cliente:} garantizar que los mensajes lleguen al cliente de forma oportuna (momento adecuado) y consistente (mismo criterio de negocio en todos los canales), considerando su contexto y preferencias \cite{torres2020,alzahrani2020}.
+  \item \textbf{Arquitectura y \textit{machine learning}:} utilizar una arquitectura de microservicios y modelos de aprendizaje autom{\'a}tico para tomar decisiones sobre qu{\'e} mensaje enviar, por qu{\'e} canal, en qu{\'e} momento y con qu{\'e} prioridad, de manera automatizada y escalable \cite{rahimi2021,salami2022}.
+\end{enumerate}
+
+En lugar de que cada sistema interno (banca m{\'o}vil, banca web, CRM, \textit{core} bancario) gestione sus propias reglas y conexiones a proveedores de mensajer{\'i}a, el modelo introduce un \textbf{gestor central} que:
+\begin{itemize}
+  \item recibe eventos de negocio mediante una API unificada de notificaciones;
+  \item consulta el historial de interacciones y preferencias de comunicaci{\'o}n del cliente;
+  \item aplica modelos de \textit{machine learning} para seleccionar canal, momento y prioridad;
+  \item ejecuta el env{\'i}o a trav{\'e}s de adaptadores de canal estandarizados; y
+  \item registra la trazabilidad completa para evaluar oportunidad, consistencia y cumplimiento regulatorio.
+\end{itemize}
+
+La Fig.~\ref{fig:conceptual-model} resume este aporte conceptual. El modelo se organiza en tres capas principales: \textbf{capa de datos}, \textbf{capa de inteligencia} y \textbf{capa de comunicaci{\'o}n}. La propuesta se inspira en marcos de mensajer{\'i}a multicanal como IM3 \cite{liang2011,liu2011}, en estrategias de comunicaci{\'o}n centradas en el cliente \cite{torres2020} y en trabajos sobre integraci{\'o}n tecnol{\'o}gica en banca \cite{rahimi2021}.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.45\textwidth]{liu2011-model.jpg}
-  \caption{Integrated multi-channel messaging model supporting business collaboration \cite{liu2011}.}
-  \label{fig:liu2011}
+  % Reemplaza conceptual-model por el nombre real del archivo de la imagen
+  \includegraphics[width=0.47\textwidth]{conceptual-model}
+  \caption{Modelo conceptual del Gestor Inteligente de Notificaciones Online para lograr comunicaci{\'o}n oportuna y consistente en banca privada.}
+  \label{fig:conceptual-model}
 \end{figure}
 
-This conceptualization contributes to the automation of notification processes in private banking by transforming manual and repetitive tasks into data-driven decisions. It also enhances traceability and transparency, since every message is logged, monitored, and evaluated. According to the SBS Resolution No. 504-2021 \cite{sbs2021} and ISO/IEC 27001 \cite{iso27001}, such mechanisms are essential for guaranteeing information security and compliance in digital financial systems. Therefore, the proposed model represents a practical framework that aligns technological innovation with security standards and customer-centric communication.
+\subsubsection{Capa de datos}
+La capa de datos consolida informaci{\'o}n dispersa sobre comunicaci{\'o}n y operaci{\'o}n bancaria: eventos de negocio, historial de notificaciones, respuestas del cliente (aperturas, clics, quejas, bajas) y atributos del cliente (segmento, preferencias de canal, ventanas horarias preferidas). En l{\'i}nea con \cite{rahimi2021}, su objetivo es eliminar silos de informaci{\'o}n y ofrecer una vista unificada que permita diagnosticar d{\'o}nde la comunicaci{\'o}n es tard{\'i}a, redundante o incoherente.
+
+\subsubsection{Capa de inteligencia}
+La capa de inteligencia transforma datos en decisiones. Se compone de modelos de \textit{machine learning} supervisado que predicen el canal y la prioridad m{\'a}s efectivos, y de un agente de aprendizaje por refuerzo que decide el momento y la frecuencia del env{\'i}o \cite{yancey2020,prabhakar2022}. As{\'i}, la plataforma aprende de la respuesta real de los clientes y ajusta la comunicaci{\'o}n para que sea m{\'a}s oportuna, relevante y alineada con su contexto.
+
+\subsubsection{Capa de comunicaci{\'o}n}
+La capa de comunicaci{\'o}n orquesta la ejecuci{\'o}n coherente de las decisiones en todos los canales: correo, SMS, notificaciones \textit{push}, mensajer{\'i}a instant{\'a}nea, entre otros. Utiliza adaptadores basados en microservicios y \textit{service mesh} para encapsular la complejidad de cada proveedor \cite{nicolas2024}, y se apoya en marcos de notificaci{\'o}n en dispositivos inteligentes para gestionar el contexto de entrega \cite{lopez2020}. Adem{\'a}s, incorpora controles y trazabilidad alineados con la Resoluci{\'o}n SBS~N.\,504--2021 y la norma ISO/IEC~27001 \cite{sbs5042021,iso27001}, garantizando que la mejora en la comunicaci{\'o}n no comprometa la seguridad de la informaci{\'o}n.
+
+En s{\'i}ntesis, el aporte conceptual integra \textbf{objetivos de comunicaci{\'o}n} (oportunidad y consistencia de los mensajes) con \textbf{mecanismos tecnol{\'o}gicos} (arquitectura y \textit{machine learning}), estableciendo una base clara para el dise{\~n}o detallado del sistema propuesto.
+
+
+
+
+\section{Aporte: Explicaci{\'o}n de Detalle de la Propuesta}
+
+Mientras que la secci{\'o}n anterior describi{\'o} el modelo conceptual, en esta secci{\'o}n se explican en detalle los componentes del \textit{Gestor Inteligente de Notificaciones Online} y c{\'o}mo trabajan en conjunto para mejorar la comunicaci{\'o}n bancaria (oportunidad y consistencia) mediante una arquitectura escalable y modelos de \textit{machine learning}.
+
+Para describir un sistema complejo como el Gestor Inteligente de Notificaciones, la arquitectura de software se descompuso en diferentes \textbf{vistas}. Las vistas de arquitectura son representaciones que describen el sistema desde la perspectiva de distintos interesados, como desarrolladores, administradores de sistemas y analistas de negocio. Cada vista se enfoc{\'o} en aspectos espec{\'i}ficos, por ejemplo:
+\begin{itemize}
+  \item la \textbf{vista l{\'o}gica}, que describe qu{\'e} hace el sistema (m{\'o}dulos, componentes y sus responsabilidades);
+  \item la \textbf{vista de procesos}, que explica c{\'o}mo se ejecutan los flujos, la concurrencia y el uso de colas y servicios;
+  \item la \textbf{vista f{\'i}sica}, que muestra c{\'o}mo se desplegaron los componentes en la infraestructura (servicios de nube, balanceadores, cach{\'e}, etc.).
+\end{itemize}
+
+En el contexto de este proyecto, la \textbf{Arquitectura T{\'e}cnica Base}, presentada en la Fig.~\ref{fig:arquitectura-software}, constituy{\'o} la vista principal que integr{\'o} los componentes clave de la soluci{\'o}n. Esta vista combin{\'o} elementos de:
+\begin{itemize}
+  \item una \textbf{vista l{\'o}gica}, al mostrar m{\'o}dulos como el M{\'o}dulo de Validaci{\'o}n, el M{\'o}dulo de Decisi{\'o}n de Prioridad (ML) y el Servicio de Orquestaci{\'o}n;
+  \item una \textbf{vista de procesos}, al representar el flujo de datos, las colas de prioridad y los servicios de despacho hacia los canales de comunicaci{\'o}n;
+  \item y una \textbf{vista f{\'i}sica}, al detallar elementos de infraestructura en nube como el balanceador de carga, la cach{\'e} y los servicios de mensajer{\'i}a externos.
+\end{itemize}
+
+Su prop{\'o}sito fue ofrecer una visi{\'o}n integral del flujo de datos, desde que la API de notificaciones recibi{\'o} la solicitud hasta que el mensaje fue despachado al proveedor de mensajer{\'i}a correspondiente, integrando en una sola vista los aspectos de comunicaci{\'o}n, arquitectura y \textit{machine learning} que sustentaron la propuesta.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.48\textwidth]{arquitectura-software}
+  \caption{Arquitectura t{\'e}cnica base del Gestor Inteligente de Notificaciones Online. Nota. Imagen de elaboraci{\'o}n propia.}
+  \label{fig:arquitectura-software}
+\end{figure}
+
+\subsection{Capa de datos e ingesta de informaci{\'o}n}
+
+La capa de datos es responsable de capturar y organizar toda la informaci{\'o}n necesaria para tomar decisiones de comunicaci{\'o}n basadas en evidencia. Siguiendo \cite{rahimi2021}, esta capa se dise{\~n}a para integrar fuentes heterog{\'e}neas y habilitar un an{\'a}lisis consistente de la experiencia del cliente.
+
+Los datos clave son:
+\begin{itemize}
+  \item \textbf{Eventos de negocio:} indican qu{\'e} est{\'a} ocurriendo con el cliente (transacciones sospechosas, vencimientos de pagos, aprobaciones, cambios de condiciones). Cada evento incluye tipo, criticidad, canal sugerido y metadatos relevantes.
+  \item \textbf{Historial de notificaci{\'o}n:} registra qu{\'e} se comunic{\'o}, cu{\'a}ndo, por qu{\'e} canal y con qu{\'e} resultado (entregado, abierto, ignorado, queja, baja). Esto permite medir si la comunicaci{\'o}n fue oportuna, redundante o incoherente.
+  \item \textbf{Perfil y preferencias del cliente:} almacena informaci{\'o}n de segmento, canales preferidos, ventanas horarias recomendadas, restricciones legales y sensibilidad a la frecuencia de mensajes \cite{torres2020,alzahrani2020}.
+\end{itemize}
+
+Estos datos se almacenan en un repositorio preparado para an{\'a}lisis (por ejemplo, \textit{data warehouse} o \textit{data lake}), y se exponen a la capa de inteligencia mediante vistas o servicios especializados. La calidad, consistencia y actualizaci{\'o}n de estos datos son esenciales para que las decisiones de \textit{machine learning} mejoren efectivamente la comunicaci{\'o}n.
+
+\subsection{Capa de inteligencia: modelos supervisados para canal y prioridad}
+
+El primer bloque de la capa de inteligencia agrupa los modelos de \textit{machine learning} supervisado encargados de decidir \textbf{qu{\'e} canal} y con \textbf{qu{\'e} prioridad} se debe comunicar cada evento. Estos modelos siguen la l{\'i}nea de trabajos que abordan las notificaciones como un problema de clasificaci{\'o}n y predicci{\'o}n de respuesta \cite{rahimi2021,yancey2020}.
+
+El proceso general es:
+\begin{enumerate}
+  \item A partir del historial de notificaciones se construyen conjuntos de entrenamiento donde cada instancia representa un intento de comunicaci{\'o}n con su contexto (tipo de evento, hora, canal utilizado, dispositivo, historial reciente, segmento del cliente).
+  \item La etiqueta indica el resultado de comunicaci{\'o}n de inter{\'e}s: apertura, clic, queja, silencio, baja u otra acci{\'o}n relevante.
+  \item Se entrenan modelos como {\'a}rboles de decisi{\'o}n y \textit{Random Forest}, que permiten capturar interacciones no lineales entre variables y ofrecen explicabilidad razonable frente a modelos opacos \cite{rahimi2021}.
+  \item En tiempo de ejecuci{\'o}n, el modelo recibe un nuevo evento y devuelve un vector de probabilidades para cada canal (correo, SMS, notificaciones \textit{push}, mensajer{\'i}a instant{\'a}nea), as{\'i} como una recomendaci{\'o}n de prioridad (cr{\'i}tica, informativa, comercial).
+\end{enumerate}
+
+De esta forma, el gestor puede reservar canales m{\'a}s intrusivos para comunicaciones cr{\'i}ticas y asignar canales menos invasivos a mensajes informativos o promocionales, alineando la estrategia con las mejores pr{\'a}cticas de comunicaci{\'o}n multicanal \cite{torres2020,alzahrani2020}.
+
+\subsection{Capa de inteligencia: aprendizaje por refuerzo para oportunidad y frecuencia}
+
+El segundo bloque de la capa de inteligencia utiliza aprendizaje por refuerzo (RL) para decidir \textbf{cu{\'a}ndo} y \textbf{con qu{\'e} frecuencia} enviar notificaciones, variables directamente asociadas a la oportunidad e intrusividad de la comunicaci{\'o}n. Este enfoque sigue trabajos que modelan la planificaci{\'o}n de notificaciones como un proceso de decisi{\'o}n secuencial \cite{yancey2020,prabhakar2022}.
+
+En este contexto:
+\begin{itemize}
+  \item El \textbf{estado} incluye la informaci{\'o}n temporal (hora del d{\'i}a, d{\'i}a de la semana), la carga reciente de notificaciones enviadas al cliente y su respuesta agregada (tasa de aperturas, quejas, silencios).
+  \item Las \textbf{acciones} comprenden enviar la notificaci{\'o}n de inmediato, posponerla a una franja posterior, agruparla con otras comunicaciones o descartarla en caso de baja relevancia.
+  \item La \textbf{recompensa} combina aspectos positivos (aperturas, clics, acciones deseadas) y negativos (quejas, bajas, alta proporci{\'o}n de notificaciones ignoradas), siguiendo la l{\'o}gica de trabajos como \cite{yancey2020,prabhakar2022}.
+\end{itemize}
+
+El agente aprende una pol{\'i}tica que maximiza la recompensa acumulada, logrando un equilibrio entre informar de manera oportuna y evitar la saturaci{\'o}n del cliente. As{\'i}, por ejemplo, puede aprender que ciertos segmentos responden mejor a notificaciones en horarios espec{\'i}ficos y que algunos tipos de mensajes no deben repetirse m{\'a}s all{\'a} de un umbral de frecuencia.
+
+\subsection{Servicio de orquestaci{\'o}n de notificaciones}
+
+El servicio de orquestaci{\'o}n representa el \textbf{punto de uni{\'o}n entre comunicaci{\'o}n, arquitectura y \textit{machine learning}}. Su funci{\'o}n es transformar eventos de negocio dispersos en decisiones de comunicaci{\'o}n coordinadas.
+
+En l{\'i}nea con \cite{salami2022,nicolas2024}, sus responsabilidades incluyen:
+\begin{itemize}
+  \item Recibir eventos desde el API Gateway y registrarlos en la capa de datos.
+  \item Consultar el historial y el perfil del cliente para construir el contexto comunicacional.
+  \item Invocar a los modelos supervisados para obtener canal y prioridad recomendados.
+  \item Invocar al agente RL para decidir si enviar ahora o reprogramar el env{\'i}o.
+  \item Construir el mensaje final (plantilla, personalizaci{\'o}n, idioma) y emitir un comando estandarizado al adaptador de canal.
+  \item Registrar las respuestas de los adaptadores (entregado, fallido, reintentado) y actualizar la capa de datos.
+\end{itemize}
+
+Gracias a esta orquestaci{\'o}n centralizada, el banco puede asegurar que una misma regla de negocio produce mensajes coherentes en todos los canales, reduciendo contradicciones y duplicidades.
+
+La Fig.~\ref{fig:system-architecture} presenta la arquitectura detallada propuesta. Se observa el flujo de informaci{\'o}n desde los sistemas de negocio hacia la capa de datos, la capa de inteligencia y la capa de comunicaci{\'o}n. Esta arquitectura combina principios de integraci{\'o}n tecnol{\'o}gica en banca \cite{rahimi2021}, estrategias de comunicaci{\'o}n multicanal \cite{torres2020,alzahrani2020} y marcos de mensajer{\'i}a financiera basados en microservicios \cite{salami2022,nicolas2024}.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=0.48\textwidth]{system-architecture}
+  \caption{Arquitectura detallada del Gestor Inteligente de Notificaciones Online propuesto.}
+  \label{fig:system-architecture}
+\end{figure}
+
+\subsection{Adaptadores de canal y capa de comunicaci{\'o}n}
+
+Los adaptadores de canal implementan la interacci{\'o}n con proveedores externos de mensajer{\'i}a (Firebase/FCM, APNs, proveedores SMS, servidores SMTP, APIs de mensajer{\'i}a instant{\'a}nea). Siguen el modelo de mensajer{\'i}a multicanal como IM3 \cite{liang2011,liu2011} y los patrones de microservicios recomendados en \cite{nicolas2024}.
+
+Cada adaptador:
+\begin{itemize}
+  \item recibe un comando de env{\'i}o estandarizado desde el servicio de orquestaci{\'o}n;
+  \item lo transforma al formato requerido por el proveedor (payload, cabeceras, par{\'a}metros de autenticaci{\'o}n);
+  \item ejecuta la llamada a la API externa y gestiona reintentos b{\'a}sicos; y
+  \item reporta el estado de la entrega al sistema (aceptado, entregado, fallido, rechazado).
+\end{itemize}
+
+Este dise{\~n}o permite agregar o sustituir canales sin modificar la l{\'o}gica central, manteniendo la consistencia de los mensajes aunque la infraestructura tecnol{\'o}gica evolucione \cite{torres2020,alzahrani2020}.
+
+\subsection{Monitoreo, m{\'e}tricas y retroalimentaci{\'o}n}
+
+Este componente mide el impacto real de la plataforma sobre la comunicaci{\'o}n con el cliente. Inspirado en \cite{rahimi2021,yancey2020}, utiliza m{\'e}tricas tanto t{\'e}cnicas como de negocio:
+
+\begin{itemize}
+  \item precisi{\'o}n, \textit{recall} y F1-score del modelo de clasificaci{\'o}n para selecci{\'o}n de canal;
+  \item recompensa promedio y estabilidad de la pol{\'i}tica del agente RL;
+  \item latencia de extremo a extremo (capacidad de entregar mensajes oportunos);
+  \item tasas de entrega, apertura y acci{\'o}n por canal y tipo de notificaci{\'o}n;
+  \item volumen y tipo de quejas o bajas asociadas a la comunicaci{\'o}n.
+\end{itemize}
+
+Los resultados se utilizan para reentrenar modelos, ajustar umbrales y revisar reglas de negocio, siguiendo una l{\'o}gica de mejora continua alineada con las expectativas de los clientes \cite{twilio2023}.
+
+\subsection{Seguridad, cumplimiento y trazabilidad}
+
+Finalmente, el componente de seguridad y cumplimiento garantiza que la arquitectura propuesta respete las exigencias normativas del sistema financiero peruano y los est{\'a}ndares internacionales de seguridad de la informaci{\'o}n. La soluci{\'o}n se alinea con la Resoluci{\'o}n SBS~N.\,504--2021 y la norma ISO/IEC~27001 \cite{sbs5042021,iso27001}.
+
+Entre los mecanismos clave est{\'a}n:
+\begin{itemize}
+  \item autenticaci{\'o}n y autorizaci{\'o}n robusta en el API Gateway (OAuth~2.0, JWT);
+  \item cifrado de datos en tr{\'a}nsito y en reposo;
+  \item registros de auditor{\'i}a para cada notificaci{\'o}n, que permiten reconstruir qu{\'e} se comunic{\'o}, cu{\'a}ndo y por qu{\'e} canal;
+  \item pol{\'i}ticas de retenci{\'o}n y anonimaci{\'o}n de datos acordes con la regulaci{\'o}n.
+\end{itemize}
+
+De este modo, la mejora en la comunicaci{\'o}n (m{\'a}s oportuna y consistente) se logra sin comprometer la confidencialidad, integridad y disponibilidad de la informaci{\'o}n, sino reforz{\'a}ndolas mediante una arquitectura segura y auditable.
+
+En conjunto, la explicaci{\'o}n de detalle muestra c{\'o}mo el problema de comunicaci{\'o}n en banca privada se afronta simult{\'a}neamente desde la \textbf{estrategia comunicacional} (decisiones de canal, momento, prioridad) y desde la \textbf{ingenier{\'i}a de sistemas} (arquitectura y \textit{machine learning}), materializando el modelo conceptual propuesto.
+
+
+
+
+
+\section{Propuesta de Validaci{\'o}n}
+
+Para corroborar la validez del \textit{Gestor Inteligente de Notificaciones Online} se propone un proceso de validaci{\'o}n mixto (cuantitativo y cualitativo) orientado a responder si la soluci{\'o}n:
+\begin{enumerate}
+  \item mejora la \textbf{oportunidad} y \textbf{consistencia} de la comunicaci{\'o}n con los clientes de banca privada;
+  \item mantiene un desempe{\~n}o t{\'e}cnico aceptable (latencia, disponibilidad, errores) de la \textbf{arquitectura} propuesta; y
+  \item alcanza niveles adecuados de calidad en los \textbf{modelos de \textit{machine learning}} (selecci{\'o}n de canal, prioridad, momento de env{\'i}o).
+\end{enumerate}
+
+El dise{\~n}o de la validaci{\'o}n se inspira en estudios previos de transformaci{\'o}n digital en banca \cite{rahimi2021}, estrategias de comunicaci{\'o}n multicanal en servicios financieros \cite{torres2020,alzahrani2020} y evaluaciones de sistemas inteligentes de notificaci{\'o}n \cite{yancey2020,prabhakar2022}.
+
+\subsection{Caso de estudio, muestra y sujetos de estudio}
+
+La validaci{\'o}n se plantear{\'a} como un \textbf{estudio de caso} en una unidad espec{\'i}fica de banca privada (por ejemplo, clientes de un segmento de productos o de una regi{\'o}n determinada). El objetivo es observar el comportamiento del sistema en un entorno realista, pero controlado.
+
+Se consideran tres tipos de sujetos de estudio:
+\begin{itemize}
+  \item \textbf{Clientes finales:} usuarios que reciben notificaciones relacionadas con operaciones, alertas y recordatorios. Se buscar{\'a} conformar una muestra de al menos $N_c$ clientes (por ejemplo, del orden de 100--300), estratificada seg{\'u}n canal preferido y tipo de producto, para medir oportunamente tasas de entrega, apertura y percepci{\'o}n de coherencia comunicacional \cite{torres2020,twilio2023}.
+  \item \textbf{Personal interno:} analistas de canales digitales, riesgos y atenci{\'o}n al cliente, que usar{\'a}n tableros y reportes del sistema. Se espera involucrar al menos $N_i$ colaboradores para evaluar la facilidad de interpretaci{\'o}n de la informaci{\'o}n, la trazabilidad y el soporte a la toma de decisiones.
+  \item \textbf{Datos hist{\'o}ricos:} registros de notificaci{\'o}n previos (antes de la implementaci{\'o}n del gestor) que servir{\'a}n como l{\'i}nea base para comparaci{\'o}n de m{\'e}tricas cuantitativas \cite{rahimi2021}.
+\end{itemize}
+
+El estudio se desarrollar{\'a} en dos fases:
+\begin{enumerate}
+  \item \textbf{Fase baseline:} recopilaci{\'o}n de m{\'e}tricas de comunicaci{\'o}n bajo el esquema actual (sin gestor inteligente).
+  \item \textbf{Fase piloto:} despliegue controlado del gestor en el mismo segmento de clientes y comparaci{\'o}n de resultados, complementada con encuestas de percepci{\'o}n y usabilidad.
+\end{enumerate}
+
+\subsection{M{\'e}tricas cuantitativas}
+
+Siguiendo las recomendaciones de la literatura sobre integraci{\'o}n tecnol{\'o}gica y evaluaci{\'o}n de sistemas inteligentes de notificaci{\'o}n \cite{rahimi2021,yancey2020,prabhakar2022}, se proponen m{\'e}tricas agrupadas en tres dimensiones: comunicaci{\'o}n, arquitectura y \textit{machine learning}. La Tabla~\ref{tab:metricas-validacion} resume las principales m{\'e}tricas y sus resultados esperados.
+
+\begin{table}[htbp]
+  \caption{M{\'e}tricas propuestas para la validaci{\'o}n del sistema}
+  \label{tab:metricas-validacion}
+  \centering
+  \begin{tabular}{p{0.32\columnwidth} p{0.45\columnwidth} p{0.15\columnwidth}}
+    \hline
+    \textbf{M{\'e}trica} & \textbf{Descripci{\'o}n} & \textbf{Objetivo} \\
+    \hline
+    Latencia de entrega
+      & Tiempo promedio entre la generaci{\'o}n del evento y la recepci{\'o}n de la notificaci{\'o}n en el dispositivo del cliente.
+      & $< 5$ s \\
+    Tasa de entrega
+      & Porcentaje de notificaciones aceptadas por el canal (sin rebotes ni errores fatales).
+      & $\geq 95\%$ \\
+    Tasa de apertura por canal
+      & Porcentaje de notificaciones abiertas respecto al total entregado por canal (correo, SMS, \textit{push}, mensajer{\'i}a).
+      & Mejora vs. baseline \\
+    \textit{Channel Selection Accuracy}
+      & Porcentaje de casos en los que el canal sugerido por el modelo coincide con el canal de mayor respuesta observada.
+      & $\geq 80\%$ \\
+    Recompensa promedio RL
+      & Valor promedio de la recompensa del agente de aprendizaje por refuerzo (combina aperturas, clics, quejas y bajas).
+      & Incremento vs. baseline \\
+    Incidencias de comunicaci{\'o}n inconsistente
+      & N{\'u}mero de casos de mensajes duplicados o contradictorios detectados en una ventana de tiempo.
+      & Disminuci{\'o}n significativa \\
+    Disponibilidad del servicio
+      & Porcentaje de tiempo en que el API de notificaciones y los componentes centrales est{\'a}n operativos.
+      & $\geq 99\%$ \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Estas m{\'e}tricas permitir{\'a}n evaluar si la arquitectura propuesta mantiene niveles aceptables de rendimiento y disponibilidad \cite{nicolas2024}, a la vez que se verifica el aporte de los modelos de \textit{machine learning} a la mejora de la comunicaci{\'o}n (oportunidad, relevancia y reducci{\'o}n de inconsistencias) \cite{torres2020,twilio2023}.
+
+\subsection{Evaluaci{\'o}n cualitativa y usabilidad}
+
+Adem{\'a}s de las m{\'e}tricas cuantitativas, se aplicar{\'a} una encuesta de percepci{\'o}n y usabilidad, tanto a clientes seleccionados como a personal interno que interact{\'u}a con los tableros del sistema. Siguiendo trabajos que enfatizan la importancia de la experiencia de usuario en sistemas de notificaci{\'o}n \cite{lopez2020,twilio2023}, se propone una escala tipo Likert de 5 puntos, donde 1 representa una valoraci{\'o}n muy negativa y 5 una valoraci{\'o}n muy positiva.
+
+La Tabla~\ref{tab:encuesta-usabilidad} muestra ejemplos de preguntas sugeridas orientadas espec{\'i}ficamente al problema de comunicaci{\'o}n bancaria y al uso del sistema propuesto.
+
+\begin{table}[htbp]
+  \caption{Ejemplos de {\'i}tems de encuesta para evaluar comunicaci{\'o}n y usabilidad}
+  \label{tab:encuesta-usabilidad}
+  \centering
+  \begin{tabular}{p{0.06\columnwidth} p{0.69\columnwidth}}
+    \hline
+    \textbf{\#} & \textbf{Pregunta (escala 1--5)} \\
+    \hline
+    1 &
+    En una escala del 1 al 5, {\'i}ndique qu{\'e} tan oportuna considera la recepci{\'o}n de las notificaciones del banco (1 = Muy inoportuna, 5 = Muy oportuna). \\
+    2 &
+    En una escala del 1 al 5, {\'i}ndique qu{\'e} tan consistente percibe la informaci{\'o}n recibida a trav{\'e}s de distintos canales (correo, SMS, \textit{push}, mensajer{\'i}a) (1 = Nada consistente, 5 = Muy consistente). \\
+    3 &
+    En una escala del 1 al 5, {\'i}ndique qu{\'e} tan claro le resulta el contenido de las notificaciones generadas por el sistema (1 = Muy confuso, 5 = Muy claro). \\
+    4 &
+    En una escala del 1 al 5, {\'i}ndique qu{\'e} tan apropiado considera el canal utilizado para las notificaciones que ha recibido (1 = Muy inapropiado, 5 = Muy apropiado). \\
+    5 &
+    En una escala del 1 al 5, {\'i}ndique en qu{\'e} medida las notificaciones le ayudan a gestionar mejor sus productos financieros (1 = Nada, 5 = Mucho). \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Para el personal interno, se adaptar{\'a}n preguntas similares, enfocadas en:
+\begin{itemize}
+  \item facilidad de interpretaci{\'o}n de los tableros de monitoreo;
+  \item utilidad de los indicadores para gestionar campa{\~n}as y alertas;
+  \item percepci{\'o}n de mejora en la coherencia de la comunicaci{\'o}n entre {\'a}reas.
+\end{itemize}
+
+\subsection{Procedimiento de validaci{\'o}n}
+
+El procedimiento general de validaci{\'o}n seguir{\'a} los siguientes pasos:
+
+\begin{enumerate}
+  \item \textbf{Definici{\'o}n de segmento y periodo de estudio:} selecci{\'o}n de un segmento de clientes y de un periodo de observaci{\'o}n (por ejemplo, 4--8 semanas) para la comparaci{\'o}n entre baseline y piloto.
+  \item \textbf{Recopilaci{\'o}n de datos baseline:} medici{\'o}n de las m{\'e}tricas de la Tabla~\ref{tab:metricas-validacion} bajo el esquema actual de comunicaci{\'o}n, sin el gestor inteligente.
+  \item \textbf{Despliegue controlado del sistema:} activaci{\'o}n del Gestor Inteligente de Notificaciones Online para el mismo segmento, manteniendo condiciones similares de volumen y tipo de eventos.
+  \item \textbf{Medici{\'o}n de m{\'e}tricas:} c{\'a}lculo de las m{\'e}tricas cuantitativas durante el piloto y comparaci{\'o}n con el baseline, analizando mejoras en oportunidad, consistencia y desempe{\~n}o de los modelos de \textit{machine learning} \cite{yancey2020,prabhakar2022}.
+  \item \textbf{Aplicaci{\'o}n de encuestas:} administraci{\'o}n de los cuestionarios de la Tabla~\ref{tab:encuesta-usabilidad} a una muestra de clientes y personal interno, recopilando evidencia de percepci{\'o}n de mejora comunicacional y usabilidad \cite{lopez2020,twilio2023}.
+  \item \textbf{An{\'a}lisis e interpretaci{\'o}n:} integraci{\'o}n de resultados cuantitativos y cualitativos para determinar si la propuesta cumple con los objetivos de comunicaci{\'o}n (mensajes m{\'a}s oportunos y consistentes), mantiene un rendimiento aceptable de la arquitectura y alcanza niveles satisfactorios en los modelos de \textit{machine learning}.
+\end{enumerate}
+
+Este esquema de validaci{\'o}n busca demostrar, de manera emp{\'i}rica, que la combinaci{\'o}n de una arquitectura de microservicios con modelos de \textit{machine learning} no solo es viable desde el punto de vista t{\'e}cnico, sino que tambi{\'e}n contribuye a resolver el problema de comunicaci{\'o}n oportuna y consistente en la banca privada.
+
+
+
+
+
+\section{Conclusiones}
+
+El estudio se centr{\'o} en el problema de la comunicaci{\'o}n digital en la banca privada, caracterizada por mensajes tard{\'i}os, redundantes o incoherentes entre canales, y propuso el dise{\~n}o de un \textit{Gestor Inteligente de Notificaciones Online} sustentado en una arquitectura de microservicios y modelos de \textit{machine learning}. A partir del an{\'a}lisis del estado del arte, de la conceptualizaci{\'o}n del modelo, del dise{\~n}o detallado de la arquitectura y de la propuesta de validaci{\'o}n, se obtuvieron las siguientes conclusiones.
+
+En primer lugar, se concluy{\'o} que la integraci{\'o}n de los objetivos de comunicaci{\'o}n (oportunidad, consistencia y relevancia de los mensajes) con una arquitectura unificada de notificaciones permiti{\'o} plantear una soluci{\'o}n m{\'a}s coherente que el esquema tradicional de canales aislados. El modelo de tres capas (datos, inteligencia y comunicaci{\'o}n) conceptualiz{\'o} de manera clara c{\'o}mo los eventos de negocio, el historial de interacciones y las preferencias del cliente pod{\'i}an convertirse en decisiones de comunicaci{\'o}n m{\'a}s alineadas con las necesidades del usuario bancario.
+
+En segundo lugar, se concluy{\'o} que la arquitectura basada en microservicios, API de notificaciones, servicio de orquestaci{\'o}n y adaptadores de canal result{\'o} adecuada para soportar la escalabilidad, la extensibilidad y el cumplimiento regulatorio requeridos en el entorno financiero. La separaci{\'o}n entre capa de datos, capa de inteligencia y capa de comunicaci{\'o}n facilit{\'o} la integraci{\'o}n con sistemas existentes, la incorporaci{\'o}n de nuevos canales y la aplicaci{\'o}n de controles de seguridad y trazabilidad alineados con las normas vigentes.
+
+En tercer lugar, se concluy{\'o} que la combinaci{\'o}n de modelos supervisados para la selecci{\'o}n de canal y prioridad con un agente de aprendizaje por refuerzo para la decisi{\'o}n del momento y la frecuencia de env{\'i}o constituy{\'o} un enfoque viable para optimizar la comunicaci{\'o}n con los clientes. Este esquema permiti{\'o} plantear m{\'e}tricas espec{\'i}ficas de desempe{\~n}o (precisi{\'o}n de selecci{\'o}n de canal, recompensa promedio del agente, tasas de apertura y reducci{\'o}n de inconsistencias) que conectaron directamente el comportamiento de los modelos de \textit{machine learning} con los objetivos de comunicaci{\'o}n del banco.
+
+Finalmente, se concluy{\'o} que la propuesta de validaci{\'o}n, basada en un estudio de caso con comparaci{\'o}n \textit{baseline}--piloto, m{\'e}tricas cuantitativas y encuestas de usabilidad, constituy{\'o} un marco adecuado para corroborar emp{\'i}ricamente la validez de la soluci{\'o}n. Este esquema permiti{\'o} vincular indicadores t{\'e}cnicos de arquitectura (latencia, disponibilidad, errores) y de modelos de \textit{machine learning} con la percepci{\'o}n de oportunidad, consistencia y utilidad de las notificaciones por parte de los clientes y del personal interno de la banca privada.
+
+
+
+
+
+
 
 
 \bibliographystyle{IEEEtran}

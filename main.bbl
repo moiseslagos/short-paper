@@ -41,6 +41,11 @@ M.~Rahimi and M.~Ghobakhloo, ``Digital transformation in banking: The role of
   technology integration,'' \emph{Journal of Financial Innovation}, vol.~8,
   no.~3, pp. 112--120, 2021.
 
+\bibitem{torres2020}
+D.~Torres and L.~Muñoz, ``Multi-channel customer communication strategies in
+  financial services,'' \emph{Latin American Journal of Management and
+  Innovation}, vol.~5, no.~1, pp. 45--53, 2020.
+
 \bibitem{salami2022}
 \BIBentryALTinterwordspacing
 O.~Salami and E.~Mnkandla, ``A design for a machine-learning-enabled
@@ -51,20 +56,16 @@ O.~Salami and E.~Mnkandla, ``A design for a machine-learning-enabled
   \url{https://doi.org/10.1109/icABCD54961.2022.9856210}
 \BIBentrySTDinterwordspacing
 
+\bibitem{liu2011}
+S.~Liu, ``An integrated multi-channel messaging model supporting for business
+  collaboration [figure],'' IEEE Xplore, 2011, available at:
+  \url{https://ieeexplore.ieee.org/document/6112142}.
+
 \bibitem{yancey2020}
 E.~Yancey and B.~Settles, ``Recovering difference softmax algorithm for
   optimizing user retention in intelligent notification systems,'' in
   \emph{Proceedings of the 2020 Conference on Intelligent Systems}.\hskip 1em
   plus 0.5em minus 0.4em\relax ACM, 2020.
-
-\bibitem{lopez2020}
-\BIBentryALTinterwordspacing
-G.~L{\'o}pez and L.~A. Guerrero, ``A conceptual framework for smart
-  device-based notifications,'' \emph{Journal of Ambient Intelligence and
-  Humanized Computing}, vol.~13, no.~11, pp. 5433--5445, 2020, online first:
-  Feb 2020; final issue pagination in 2022. [Online]. Available:
-  \url{https://doi.org/10.1007/s12652-020-01801-w}
-\BIBentrySTDinterwordspacing
 
 \bibitem{prabhakar2022}
 \BIBentryALTinterwordspacing
@@ -82,20 +83,24 @@ A.~Nicolas{-}Plata, J.~L. Gonzalez{-}Compean, and V.~J. Sosa{-}Sosa, ``A
   [Online]. Available: \url{https://doi.org/10.1007/s10586-024-04342-5}
 \BIBentrySTDinterwordspacing
 
-\bibitem{torres2020}
-D.~Torres and L.~Muñoz, ``Multi-channel customer communication strategies in
-  financial services,'' \emph{Latin American Journal of Management and
-  Innovation}, vol.~5, no.~1, pp. 45--53, 2020.
+\bibitem{lopez2020}
+\BIBentryALTinterwordspacing
+G.~L{\'o}pez and L.~A. Guerrero, ``A conceptual framework for smart
+  device-based notifications,'' \emph{Journal of Ambient Intelligence and
+  Humanized Computing}, vol.~13, no.~11, pp. 5433--5445, 2020, online first:
+  Feb 2020; final issue pagination in 2022. [Online]. Available:
+  \url{https://doi.org/10.1007/s12652-020-01801-w}
+\BIBentrySTDinterwordspacing
 
-\bibitem{liu2011}
-S.~Liu, ``An integrated multi-channel messaging model supporting for business
-  collaboration [figure],'' IEEE Xplore, 2011, available at:
-  \url{https://ieeexplore.ieee.org/document/6112142}.
-
-\bibitem{sbs2021}
-{Superintendencia de Banca, Seguros y AFP (SBS)}, ``Resolución sbs n°
-  504-2021: Reglamento para la seguridad de la información y ciberseguridad,''
-  SBS, Lima, Perú, Tech. Rep., 2021.
+\bibitem{sbs5042021}
+\BIBentryALTinterwordspacing
+{Superintendencia de Banca, Seguros y AFP (SBS)}, ``Resoluci{\'o}n sbs
+  n.{\textordmasculine} 504{-}2021: Reglamento para la gesti{\'o}n de la
+  seguridad de la informaci{\'o}n y la ciberseguridad,'' 2021, reglamento
+  oficial de seguridad de la informaci{\'o}n para entidades del sistema
+  financiero en el Per{\'u}. [Online]. Available:
+  \url{https://www.sbs.gob.pe/app/pp/int_cn/paginas/busqueda/Download.aspx?url=p8ehJETNq5hYZsadCTQlDA1Pw7aAvNcREl6DVQhESNiouiM3fzeprEeqSY0+Ubw+IMYa9V8Zay%2FmgvD1uvX66Ar+LIbOKeBV02kcyJ2IZ6v4H2QIXJdRcngUYbKeMk6iiTj0PbAelInvl2RoVoDZI9yob5jfd8z1l%2FKMISH4rags7zMKSVlHepUDpVyvKLUc7izoAtxSVrjxFwYv9y09Rg%3D%3D}
+\BIBentrySTDinterwordspacing
 
 \bibitem{iso27001}
 {International Organization for Standardization}, \emph{ISO/IEC 27001:
